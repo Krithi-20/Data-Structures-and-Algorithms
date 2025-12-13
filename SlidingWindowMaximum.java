@@ -1,7 +1,7 @@
 import java.util.Deque;
 import java.util.LinkedList;
 
-class Solution {
+class SlidingWindowMaximum {
     public int[] maxSlidingWindow(int[] nums, int k) {
         if(nums == null || nums.length == 0 || k<=0) {
             return new int [0];
