@@ -1,0 +1,32 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
+class TimeMap {
+
+    private Map <String, TreeMap<Integer,String>> map;
+
+    public TimeMap() {
+        map = new HashMap <>();
+    }
+    
+    public void set(String key, String value, int timestamp) {
+        map.computeIfAbsent(key, k -> new TreeMap<>()).put(timestamp, value); //we're creating treemap onspot
+    } //shortend lambda expression to create a Treemap for each new unique key 
+    
+    public String get(String key, int timestamp) {
+        TreeMap<Integer,String> treeMap = map.get(key);  //searching for treemap's key val
+        if(treeMap == null) {
+            return "";
+        }
+        Map.Entry<Integer, String> entry = treeMap.floorEntry(timestamp);
+        return entry == null ? "" : entry.getValue();
+    }
+}
+
+/**
+ * Your TimeMap object will be instantiated and called as such:
+ * TimeMap obj = new TimeMap();
+ * obj.set(key,value,timestamp);
+ * String param_2 = obj.get(key,timestamp);
+ */
