@@ -4,11 +4,10 @@
  */
 
 
-class ListNode {
+class Node {
 
-    ListNode(int par) {
+    Node(int val, Object object, Object object0) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    ListNode next;
 
 }
