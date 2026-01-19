@@ -1,0 +1,26 @@
+import java.util.HashMap;
+import java.util.Map;
+
+class Solution {
+    public int longestSubarray(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int sum = 0, maxLen = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+
+            if (sum == k) {
+                maxLen = i + 1;
+            }
+
+            if (map.containsKey(sum - k)) {
+                maxLen = Math.max(maxLen, i - map.get(sum - k));
+            }
+
+            // store first occurrence only
+            map.putIfAbsent(sum, i);
+        }
+
+        return maxLen;
+    }
+}
