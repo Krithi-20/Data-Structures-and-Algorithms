@@ -1,38 +1,61 @@
 class MedianOfTwoSortedArrays {
-    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
-        if(nums1.length > nums2.length) {
-            return findMedianSortedArrays(nums2, nums1); // to find min array 
-        }
-        int x = nums1.length;
-        int y = nums2.length;
 
-        int start = 0;
-        int end = x;
-
-        while(start <= end) {
-            int partX = (start+end) / 2; //portion takes from x for left side
-            int partY = (x+y+1) / 2 - partX; //portion taken from y for left side
-
-            int xLeft = partX == 0 ? Integer.MIN_VALUE : nums1[partX-1];  //left side 0
-            int xRight = partX == x ? Integer.MAX_VALUE : nums1[partX];   //right side 0
-            int yLeft = partY == 0 ? Integer.MIN_VALUE : nums2[partY-1];  //left side 0
-            int yRight = partY == y ? Integer.MAX_VALUE : nums2[partY];   //right side 0
-
-            if(xLeft <= yRight && yLeft <= xRight) {
-                if((x+y)%2 == 0) {
-                    return ((double) Math.max(xLeft,yLeft) + Math.min(xRight,yRight))/2; //even length
-                } else {
-                    return Math.max(xLeft, yLeft); //odd length
+    public int find(int [] nums1, int [] nums2, int idx) {
+        int i=0; int j=0;
+        int cnt = 0;
+        int ele = 0;
+        while (i < nums1.length && j < nums2.length) {
+            if(nums1[i] <= nums2[j]) {
+                if(cnt == idx) {
+                    ele = nums1[i];
                 }
-            }
-
-            else if (xLeft > yRight) {
-                end = partX-1; 
-            }
+                cnt++;
+                i++;
+            } 
             else {
-                start = partX+1;
+                if(cnt == idx) {
+                    ele = nums2[j];
+                }
+                cnt++;
+                j++;
             }
         }
-        return 0;
+
+        while(i < nums1.length) {
+            if(cnt == idx) {
+                ele = nums1[i];
+            }
+            cnt++;
+            i++;
+        }
+
+        while(j < nums2.length) {
+            if(cnt == idx) {
+                ele = nums2[j];
+            }
+            cnt++;
+            j++;
+        }
+
+        return ele;
+    }
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int m = nums1.length;
+        int n = nums2.length;
+
+        int length = m+n;
+
+        if(length % 2 == 0) {
+            int idx1 = (length/2)-1;
+            int idx2 = (length/2);
+            int ele1 = find(nums1, nums2, idx1);
+            int ele2 = find(nums1, nums2, idx2);
+            return (double) (ele1+ele2)/2;
+        }
+        else {
+            int idx = (length/2);
+            int ele = find(nums1, nums2, idx);
+            return (double) ele;
+        }
     }
 }

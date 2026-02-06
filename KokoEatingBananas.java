@@ -1,26 +1,36 @@
-class KokoEatingBananas {
-    public int minEatingSpeed(int[] piles, int h) {
-        int left = 1, right = 1;
-        for(int pile : piles) {
-            right = Math.max(right,pile);
-        }
+import java.util.Arrays;
 
-        while(left < right) {
-            int mid = left + (right - left) / 2;
-            if( canFinish (piles,mid,h)) { //here mid = k = speed of eating (we need to find slowest speed)
-                right = mid;
-            } else {
-                left = mid + 1;
-            }
+class KokoEatingBananas {
+
+    public long totalHrsUtility(int []piles, int mid) {
+        long totalHrs = 0;
+        for(int i : piles) {
+            totalHrs += Math.ceil((double)i/mid);
         }
-        return left;
+        return totalHrs;
     }
 
-    public boolean canFinish(int [] piles, int k, int h) {
-        int hrs = 0;
-        for(int pile : piles) {
-            hrs += Math.ceil((double) pile/k);
+    public int minEatingSpeed(int[] piles, int h) {
+
+        int n = piles.length;
+
+        int max = Arrays.stream(piles).max().getAsInt();
+        
+        int low = 1;
+        int high = max;
+
+        while(low <= high) {
+            int mid = low + (high-low)/2;
+
+            long totalHrs = totalHrsUtility(piles,mid);
+
+            if(totalHrs <= h) {
+                high = mid-1;
+            }
+            else {
+                low = mid+1;
+            }
         }
-        return hrs <=h;
+        return low;
     }
 }
