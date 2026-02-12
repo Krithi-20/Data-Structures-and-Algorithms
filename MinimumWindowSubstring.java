@@ -1,52 +1,45 @@
-
 import java.util.HashMap;
+import java.util.Map;
 
 class Solution {
     public String minWindow(String s, String t) {
-        if (s.length() == 0 || t.length() == 0 || s.length() < t.length()) {
-            return "";
+        int l = 0;
+        int r = 0;
+        int minLen = Integer.MAX_VALUE;
+        int cnt = 0;
+        int startIdx = -1;
+
+        Map <Character, Integer> mp = new HashMap <>();
+
+        for(int i=0; i<t.length(); i++) {
+            mp.put(t.charAt(i),mp.getOrDefault(t.charAt(i),0)+1);
         }
 
-        HashMap<Character, Integer> mapT = new HashMap<>();
-        for (int i = 0; i < t.length(); i++) {
-            mapT.put(t.charAt(i), mapT.getOrDefault(t.charAt(i), 0) + 1);
-        }
-
-        int required = mapT.size();
-        int formed = 0;
-
-        int l = 0, r = 0;
-        HashMap<Character, Integer> window = new HashMap<>();
-
-        int[] ans = {-1, 0, 0}; // length, left, right
-
-        while (r < s.length()) {
-            char c = s.charAt(r);
-            window.put(c, window.getOrDefault(c, 0) + 1);
-
-            if (mapT.containsKey(c) && window.get(c).intValue() == mapT.get(c).intValue()) {
-                formed++;
+        while(r < s.length()) {
+            if(mp.containsKey(s.charAt(r))) {
+                if(mp.get(s.charAt(r)) > 0) {
+                    cnt++;
+                }
+                mp.put(s.charAt(r),mp.get(s.charAt(r))-1);
             }
 
-            while (l <= r && formed == required) {
-                if (ans[0] == -1 || (r - l + 1) < ans[0]) {
-                    ans[0] = r - l + 1;
-                    ans[1] = l;
-                    ans[2] = r;
+            while(cnt == t.length()) {
+                if(r-l+1 < minLen) {
+                    minLen = r-l+1;
+                    startIdx = l;
                 }
 
-                char leftChar = s.charAt(l);
-                window.put(leftChar, window.get(leftChar) - 1);
-
-                if (mapT.containsKey(leftChar) && window.get(leftChar) < mapT.get(leftChar)) {
-                    formed--;
+                if(mp.containsKey(s.charAt(l))) {
+                    mp.put(s.charAt(l), mp.get(s.charAt(l))+1);
+                    if(mp.get(s.charAt(l)) > 0) {
+                        cnt--;
+                    }
                 }
                 l++;
             }
 
-            r++;   // <-- FIXED
+            r++;
         }
-
-        return ans[0] == -1 ? "" : s.substring(ans[1], ans[2] + 1);
+        return startIdx == -1 ? "" : s.substring(startIdx, minLen+startIdx);
     }
 }
